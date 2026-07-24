@@ -21,8 +21,8 @@ pipeline {
                         go test -coverprofile=coverage.out -covermode=atomic ./...
                         go tool cover -html=coverage.out -o coverage.html
 
-                        mkdir -p code-coverage-reports
-                        mv coverage.html code-coverage-reports/
+                        mkdir -p backend-code-coverage-reports
+                        mv coverage.html backend-code-coverage-reports/
                     '''
                 }
             }
@@ -30,7 +30,7 @@ pipeline {
                 always{
                     junit 'bugtracker-backend/test-results.xml'
                     publishHTML target: [
-                        reportDir: 'bugtracker-backend/code-coverage-reports',
+                        reportDir: 'bugtracker-backend/backend-code-coverage-reports',
                         reportFiles: 'coverage.html',
                         reportName: 'Backend Coverage Report'
                     ]
@@ -50,12 +50,19 @@ pipeline {
                     sh '''
                         npm ci
                         npm test
+                        mkdir -p frontend-code-coverage-reports
+                        mv coverage frontend-code-coverage-reports/
                     '''
                 }
             }
             post {
                 always{
                     junit 'bugtracker-frontend/test-results.xml'
+                    publishHTML target: [
+                        reportDir: 'bugtracker-frontend/frontend-code-coverage-reports',
+                        reportFiles: 'index.html',
+                        reportName: 'Frontend Coverage Report'
+                    ]
                 }
             }
         }

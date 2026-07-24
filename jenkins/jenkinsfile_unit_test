@@ -1,0 +1,13 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Unit Tests - Backend') {
+            steps {
+                dir('bug-tracker/backend'){
+                    go test -v ./...
+                }
+            }
+        }
+    }
+}
